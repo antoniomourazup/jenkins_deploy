@@ -1,11 +1,11 @@
 pipeline {
 	agent any
 	stages {
-        stage('Tests') {
-            steps {
-                sh 'xcodebuild -scheme "SampleUnitTesting" -configuration "Debug" build test -destination "platform=iOS Simulator, name=iPhone 11 Pro,OS=14.3" '
-            }
-        }
+        // stage('Tests') {
+        //     steps {
+        //         sh 'xcodebuild -scheme "SampleUnitTesting" -configuration "Debug" build test -destination "platform=iOS Simulator, name=iPhone 11 Pro,OS=14.3" '
+        //     }
+        // }
         stage('Security') {
             steps {
                 sh 'curl -fsSL https://raw.githubusercontent.com/ZupIT/horusec/main/deployments/scripts/install.sh | bash -s latest'
