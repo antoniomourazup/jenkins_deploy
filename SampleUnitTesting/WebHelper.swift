@@ -20,31 +20,31 @@ public struct WebHelper {
      - returns: the URL with the mutated query string
      */
     public func addOrUpdateQueryStringParameter(url: String, key: String, value: String?) -> String {
-        if let components = NSURLComponents(string: url),
-            var queryItems: [NSURLQueryItem] = (components.queryItems ?? []) {
-                for (index, item) in queryItems.enumerate() {
-                    // Match query string key and update
-                    if item.name.lowercaseString == key.lowercaseString {
-                        if let v = value {
-                            queryItems[index] = NSURLQueryItem(name: key, value: v)
-                        } else {
-                            queryItems.removeAtIndex(index)
-                        }
-                        components.queryItems = queryItems.count > 0
-                            ? queryItems : nil
-                        return components.string!
-                    }
-                }
-                
-                // Key doesn't exist if reaches here
+        guard let components = NSURLComponents(string: url) else {
+            return String()
+        }
+        var queryItems = (components.queryItems ?? [])
+        for (index, item) in queryItems.enumerated() {
+            // Match query string key and update
+            if item.name.lowercased() == key.lowercased() {
                 if let v = value {
-                    // Add key to URL query string
-                    queryItems.append(NSURLQueryItem(name: key, value: v))
-                    components.queryItems = queryItems
-                    return components.string!
+                    queryItems[index] = NSURLQueryItem(name: key, value: v) as URLQueryItem
+                } else {
+                    queryItems.remove(at: index)
                 }
+                components.queryItems = queryItems.count > 0
+                    ? queryItems : nil
+                return components.string!
+            }
         }
         
+        // Key doesn't exist if reaches here
+        if let v = value {
+            // Add key to URL query string
+            queryItems.append(NSURLQueryItem(name: key, value: v) as URLQueryItem)
+            components.queryItems = queryItems
+            return components.string!
+        }
         return url
     }
     
@@ -57,7 +57,7 @@ public struct WebHelper {
      - returns: the URL with the mutated query string
      */
     public func removeQueryStringParameter(url: String, key: String) -> String {
-        return addOrUpdateQueryStringParameter(url, key: key, value: nil)
+        return addOrUpdateQueryStringParameter(url: url, key: key, value: nil)
     }
     
 }
