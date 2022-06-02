@@ -1,7 +1,7 @@
 pipeline {
 	agent any
 	stages {
-        stage {'Tests'} {
+        stage('Tests') {
             steps {
                 sh 'xcodebuild -scheme "SampleUnitTesting" -configuration "Debug" build test -destination "platform=iOS Simulator, name=iPhone 11 Pro,OS=14.3" '
             }
