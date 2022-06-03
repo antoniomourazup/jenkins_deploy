@@ -1,3 +1,5 @@
+def remote = [:]
+
 pipeline {
 	agent {label 'macos'}
 	stages {
@@ -13,8 +15,19 @@ pipeline {
         }
         stage('Security') {
             steps {
-                sh 'curl -fsSL https://raw.githubusercontent.com/ZupIT/horusec/main/deployments/scripts/install.sh | bash -s latest'
-                sh 'horusec start -p="./" -e="true"'
+                script {
+                    withCredentials([usernamePassword(credentialsId: 'macos', passwordVariable: 'pass', usernameVariable: 'user')]) {
+                        remote.name = "$user"
+                        remote.host = '192.168.0.194'
+                        remote.user = "$user"
+                        remote.password = "$pass"
+                        remote.allowAnyHosts = true
+                        remote.pty = true    
+                    }
+                    sshCommand remote: remote, command: 'curl -fsSL https://raw.githubusercontent.com/ZupIT/horusec/main/deployments/scripts/install.sh | bash -s latest' , sudo: true
+                    sh 'horusec start -a aec4312b-37e8-4188-ae77-135d23dc208e -p .'
+                }
+                
             }
         }
     }
