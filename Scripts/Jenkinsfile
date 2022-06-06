@@ -1,7 +1,8 @@
 def remote = [:]
+nodeAgent = 'macos'
 
 pipeline {
-	agent {label 'macos'}
+	agent { label nodeAgent }
 	stages {
         stage('Build') {
             steps {
@@ -32,7 +33,7 @@ pipeline {
                     sshCommand remote: remote, command: 'curl -fsSL https://raw.githubusercontent.com/ZupIT/horusec/main/deployments/scripts/install.sh | bash -s latest' , sudo: true
                     sh 'horusec start -a aec4312b-37e8-4188-ae77-135d23dc208e -p .'
                 }
-                
+
             }
         }
     }
