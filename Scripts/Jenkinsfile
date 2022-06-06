@@ -8,6 +8,11 @@ pipeline {
                 sh 'xcodebuild -project SampleUnitTesting.xcodeproj -scheme SampleUnitTesting -destination "platform=iOS Simulator,name=iPhone 11,OS=14.4"'
             }
         }
+        stage('Lint') {
+            steps {
+                sh 'swiftlint'
+            }
+        }
         stage('Tests') {
             steps {
                 sh 'xcodebuild test -project SampleUnitTesting.xcodeproj -scheme SampleUnitTestingXCTests -destination "platform=iOS Simulator,name=iPhone 11 Pro,OS=14.4"'
