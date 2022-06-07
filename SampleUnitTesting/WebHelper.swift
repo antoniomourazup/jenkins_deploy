@@ -9,7 +9,7 @@
 import Foundation
 
 public struct WebHelper {
-    
+
     /**
      Add, update, or remove a query string parameter from the URL
      
@@ -27,27 +27,26 @@ public struct WebHelper {
         for (index, item) in queryItems.enumerated() {
             // Match query string key and update
             if item.name.lowercased() == key.lowercased() {
-                if let v = value {
-                    queryItems[index] = NSURLQueryItem(name: key, value: v) as URLQueryItem
+                if let newValue = value {
+                    queryItems[index] = NSURLQueryItem(name: key, value: newValue) as URLQueryItem
                 } else {
                     queryItems.remove(at: index)
                 }
-                components.queryItems = queryItems.count > 0
-                    ? queryItems : nil
+                components.queryItems = queryItems.count > 0 ? queryItems : nil
                 return components.string!
             }
         }
-        
+
         // Key doesn't exist if reaches here
-        if let v = value {
+        if let newValue = value {
             // Add key to URL query string
-            queryItems.append(NSURLQueryItem(name: key, value: v) as URLQueryItem)
+            queryItems.append(NSURLQueryItem(name: key, value: newValue) as URLQueryItem)
             components.queryItems = queryItems
             return components.string!
         }
         return url
     }
-    
+
     /**
      Removes a query string parameter from the URL
      
@@ -59,5 +58,5 @@ public struct WebHelper {
     public func removeQueryStringParameter(url: String, key: String) -> String {
         return addOrUpdateQueryStringParameter(url: url, key: key, value: nil)
     }
-    
+
 }
