@@ -7,7 +7,7 @@ pipeline {
 	stages {
         stage('Build') {
             steps {
-                sh 'xcodebuild -project SampleUnitTesting.xcodeproj -scheme SampleUnitTesting -destination "platform=iOS Simulator,name=iPhone 11,OS=14.4"'
+                sh 'xcodebuild -project SampleUnitTesting.xcodeproj -scheme SampleUnitTesting -destination "platform=iOS Simulator,name=iPhone 11,OS=14.3"'
             }
         }
         stage('Lint') {
