@@ -1,8 +1,9 @@
 def remote = [:]
-nodeAgent = 'macos'
+agentName = 'macos'
+agentAddress = '192.168.0.194'
 
 pipeline {
-	agent { label nodeAgent }
+	agent { label agentName }
 	stages {
         stage('Build') {
             steps {
@@ -16,15 +17,15 @@ pipeline {
         }
         stage('Tests') {
             steps {
-                sh 'xcodebuild test -project SampleUnitTesting.xcodeproj -scheme SampleUnitTestingXCTests -destination "platform=iOS Simulator,name=iPhone 11 Pro,OS=14.4"'
+                sh 'xcodebuild test -project SampleUnitTesting.xcodeproj -scheme SampleUnitTestingXCTests -destination "platform=iOS Simulator,name=iPhone 11 Pro,OS=14.3"'
             }
         }
-        stage('Security') {
+        stage('Horusec') {
             steps {
                 script {
                     withCredentials([usernamePassword(credentialsId: 'macos', passwordVariable: 'pass', usernameVariable: 'user')]) {
                         remote.name = "$user"
-                        remote.host = '192.168.0.194'
+                        remote.host = 'agentAddress'
                         remote.user = "$user"
                         remote.password = "$pass"
                         remote.allowAnyHosts = true
