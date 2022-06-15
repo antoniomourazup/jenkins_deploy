@@ -1,13 +1,13 @@
 def remote = [:]
 agentName = 'macos'
-agentAddress = '192.168.0.196'
+urlHorusecScript = 'https://raw.githubusercontent.com/ZupIT/horusec/main/deployments/scripts/install.sh'
 
 pipeline {
 	agent { label agentName }
 	stages {
         stage('Build') {
             steps {
-                sh 'xcodebuild -project SampleUnitTesting.xcodeproj -scheme SampleUnitTesting -destination "platform=iOS Simulator,name=iPhone 11,OS=14.3"'
+                sh getCommandBuildAndTests(false)
             }
         }
         stage('Lint') {
@@ -17,7 +17,7 @@ pipeline {
         }
         stage('Tests') {
             steps {
-                sh 'xcodebuild test -project SampleUnitTesting.xcodeproj -scheme SampleUnitTestingXCTests -destination "platform=iOS Simulator,name=iPhone 11 Pro,OS=14.3"'
+                sh getCommandBuildAndTests(true)
             }
         }
         stage('Horusec') {
@@ -25,17 +25,36 @@ pipeline {
                 script {
                     withCredentials([usernamePassword(credentialsId: 'macos', passwordVariable: 'pass', usernameVariable: 'user')]) {
                         remote.name = "$user"
-                        remote.host = agentAddress
+                        remote.host = getIp(agentName)
                         remote.user = "$user"
                         remote.password = "$pass"
                         remote.allowAnyHosts = true
                         remote.pty = true    
                     }
-                    sshCommand remote: remote, command: 'curl -fsSL https://raw.githubusercontent.com/ZupIT/horusec/main/deployments/scripts/install.sh | bash -s latest' , sudo: true
+                    sshCommand remote: remote, command: "curl -fsSL ${urlHorusecScript} | bash -s latest" , sudo: true
                     sh 'horusec start -a aec4312b-37e8-4188-ae77-135d23dc208e -p .'
                 }
-
             }
         }
+    }
+}
+
+def getCommandBuildAndTests(isTest) {
+    def buildScheme = 'SampleUnitTesting'
+    def test = ''
+    if(isTest) {
+        buildScheme = 'SampleUnitTestingXCTests'
+        test = 'test'
+    } 
+    return "xcodebuild ${test} -project SampleUnitTesting.xcodeproj -scheme ${buildScheme} -destination 'platform=iOS Simulator,name=iPhone 11 Pro,OS=14.3'"
+}
+
+def getIp(nodeName) {
+    def node = Jenkins.instance.slaves.find{it.name.trim()==nodeName.trim()}
+    if(node) {
+        def ip = InetAddress.getByName(node.computer.hostName).getHostAddress()
+        return ip
+    } else {
+        println "node not found in jenkins instance"
     }
 }
