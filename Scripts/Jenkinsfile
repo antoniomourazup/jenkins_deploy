@@ -32,7 +32,7 @@ pipeline {
                         remote.pty = true    
                     }
                     sshCommand remote: remote, command: "curl -fsSL ${urlHorusecScript} | bash -s latest" , sudo: true
-                    sh 'horusec start -a aec4312b-37e8-4188-ae77-135d23dc208e -p .'
+                    sh 'horusec start -a aec4312b-37e8-4188-ae77-135d23dc208e -p="./" -e="true"'
                 }
             }
         }
