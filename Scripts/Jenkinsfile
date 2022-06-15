@@ -25,7 +25,7 @@ pipeline {
                 script {
                     withCredentials([usernamePassword(credentialsId: 'macos', passwordVariable: 'pass', usernameVariable: 'user')]) {
                         remote.name = "$user"
-                        remote.host = 'agentAddress'
+                        remote.host = agentAddress
                         remote.user = "$user"
                         remote.password = "$pass"
                         remote.allowAnyHosts = true
