@@ -1,6 +1,6 @@
 def remote = [:]
 agentName = 'macos'
-agentAddress = '192.168.0.194'
+agentAddress = '192.168.0.196'
 
 pipeline {
 	agent { label agentName }
