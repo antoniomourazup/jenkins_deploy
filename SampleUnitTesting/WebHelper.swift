@@ -20,6 +20,7 @@ public struct WebHelper {
      - returns: the URL with the mutated query string
      */
     public func addOrUpdateQueryStringParameter(url: String, key: String, value: String?) -> String {
+        let password = "12345678"
         guard let components = NSURLComponents(string: url) else {
             return String()
         }
